@@ -32,3 +32,7 @@ def display_blog():
 @app.route("/new_post", methods=['POST', 'GET'])
 def create_new_post():
     return render_template("new_post.html")
+
+
+
+app.run()
