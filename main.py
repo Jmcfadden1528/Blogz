@@ -38,34 +38,37 @@ def display_blog():
         last_post = all_posts[-1]
         if new_post == last_post:
             return redirect ('/post_display?id=' + str(new_post.id))
-        #### WHAT THE FUCK IS GOING ON
+       
     if request.method == 'GET':
-        title = request.args.get('title')
-        body = request.args.get('body')
-        new_post = Blog(title, body)
-        db.session.add(new_post)
-        db.session.commit()
-
-        all_posts = Blog.query.all()
-        return render_template("blog.html", all_posts=all_posts)
+   
+            all_posts = Blog.query.all()
+            return render_template("blog.html", all_posts=all_posts)
         
 
 
 @app.route("/new_post", methods=['POST', 'GET'])
 def create_new_post():
-    #needs to send info to blog
-    return render_template("new_post.html")
+    error = request.args.get('error')
+    if error:
+        error = error
+    else:
+        error = ''
+   
+    return render_template("new_post.html", error=error)
 
 @app.route("/post_display", methods=['POST', 'GET'])
-def display_post(): #NEED TO FIGURE OUT HOW TO RENDER TEMPLATE WITH CORRECT ID
+def display_post(): 
     id = request.args.get('id')
     
     blog = Blog.query.get(id)
     blog_title = blog.title
     blog_body = blog.body
+    #NEED TO ADD A CREATION DATE/TIME ATTRIBUTE AND ORDER IT IN /BLOG
+    if blog_title == '' or blog_body == '':
+        error = 'Text fields cannot be left blank'
+        return redirect('/new_post?error=' + error)
 
     return render_template("post_display.html", blog_title=blog_title, blog_body=blog_body)
 
-
-
-app.run()
+if __name__ == '__main__':
+    app.run()
