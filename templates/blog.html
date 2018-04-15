@@ -4,4 +4,13 @@
 
 <h1>My Blog</h1>
 
+
+    {% for post in all_posts %}
+    <h1><a href='/post_display?id={{post.id}}'>{{post.title}}</a></h1>
+    <br>
+    <p>{{post.body}}</p>
+    <hr>
+    {% endfor %}
+
+
 {% endblock %}
