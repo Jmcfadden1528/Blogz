@@ -38,8 +38,16 @@ def display_blog():
         last_post = all_posts[-1]
         if new_post == last_post:
             return redirect ('/post_display?id=' + str(new_post.id))
-        else:
-            return render_template("blog.html", all_posts=all_posts)
+        #### WHAT THE FUCK IS GOING ON
+    if request.method == 'GET':
+        title = request.args.get('title')
+        body = request.args.get('body')
+        new_post = Blog(title, body)
+        db.session.add(new_post)
+        db.session.commit()
+
+        all_posts = Blog.query.all()
+        return render_template("blog.html", all_posts=all_posts)
         
 
 
