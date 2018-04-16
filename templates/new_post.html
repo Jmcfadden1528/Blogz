@@ -5,12 +5,14 @@
 <h1>Add a new post!</h1>
 
 <form action='/blog' method='POST'>
-    <label>Title <input type='text' name='title' /></label>
-    <label>Body <input type='text' name='body' /></label>
+<label>Title <input type='text' name='title' value='{{blog_title}}' /></label>
+    <br>
+    <br>
+    <label><textarea rows='20' cols='50' type='text' name='body' >{{blog_body}}</textarea></label>
     <input type='hidden' name='id' />
     <input type='submit' value='Add Me!' />
 </form>
-<p>{{error}}</p>
+<p class='error'>{{error}}</p>
 
 
 

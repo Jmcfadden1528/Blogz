@@ -49,12 +49,18 @@ def display_blog():
 @app.route("/new_post", methods=['POST', 'GET'])
 def create_new_post():
     error = request.args.get('error')
+    blog_title = request.args.get('blog_title')
+    blog_body = request.args.get('blog_body')
     if error:
         error = error
+        blog_title = blog_title
+        blog_body = blog_body
     else:
         error = ''
+        blog_title = ''
+        blog_body = ''
    
-    return render_template("new_post.html", error=error)
+    return render_template("new_post.html", error=error, blog_title=blog_title, blog_body=blog_body)
 
 @app.route("/post_display", methods=['POST', 'GET'])
 def display_post(): 
@@ -66,7 +72,8 @@ def display_post():
     #NEED TO ADD A CREATION DATE/TIME ATTRIBUTE AND ORDER IT IN /BLOG
     if blog_title == '' or blog_body == '':
         error = 'Text fields cannot be left blank'
-        return redirect('/new_post?error=' + error)
+
+        return redirect('/new_post?error=' + error + '&blog_title=' + blog_title + '&blog_body=' + blog_body)
 
     return render_template("post_display.html", blog_title=blog_title, blog_body=blog_body)
 

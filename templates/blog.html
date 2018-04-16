@@ -6,9 +6,9 @@
 
 
     {% for post in all_posts %}
-        <h2><a href='/post_display?id={{post.id}}'>{{post.title}}</a></h2>
+        <h2><a id='blog_title' href='/post_display?id={{post.id}}'>{{post.title}}</a></h2>
         <br>
-        <p>{{post.body}}</p>
+        <p class='body_margin'>{{post.body}}</p>
         <hr>
     {% endfor %}
 
