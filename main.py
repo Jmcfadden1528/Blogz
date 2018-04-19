@@ -31,23 +31,46 @@ class User(db.Model):
     password = db.Column(db.String(120))
     posts = db.relationship('Blog', backref='owner')
 
+    def __init__(self, username, password):
+        self.username = username
+        self.password = password
+
+
+@app.route("/login", methods=['POST', 'GET'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        user = User.query.filter_by(username=username).first()
+        if user and user.password == password:
+            session['username'] = username
+            flash("Logged in")
+            return redirect('/new_post')
+        else:
+            flash('User password incorrect, or user does not exist')
+
+    return render_template('login.html')
 
 @app.route("/signup", methods=['POST', 'GET'])
 def signup():
     if request.method == 'POST':
-        user = request.form['email']
+        username = request.form['username']
         password = request.form['password']
         verify = request.form['verify']
 
         #VALIDATE USERS DATA
+        if password != verify or password == '' or len(password) < 3:
+            error = 'Passwords cannot be left blank and must be greater than 3 characters'
+            return redirect("/signup?error=" + error)
+            #Error is not working. NEED TO FIX.
 
         existing_user = User.query.filter_by(username=username).first()
         if not existing_user:
-            new_user = User(email, password)
+            new_user = User(username, password)
             db.session.add(new_user)
             db.session.commit()
             #NEED TO REMEMBER THE USER
-            return redirect("blog")
+            return redirect("/new_post")
 
         else:
             return "<h1>Duplicate User</h1>"
