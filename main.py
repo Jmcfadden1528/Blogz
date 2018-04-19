@@ -4,7 +4,7 @@ import cgi
 
 app = Flask(__name__)
 app.config['DEBUG'] = True      # displays runtime errors in the browser, too
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://build-a-blog:password@localhost:8889/build-a-blog'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://blogz:password@localhost:8889/blogz'
 app.config['SQLALCHEMY_ECHO'] = True
 
 app.secret_key = 'secretkey'
@@ -15,13 +15,44 @@ class Blog(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(120))
     body = db.Column(db.String(800))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
-    def __init__(self, title, body):
+    def __init__(self, title, body, owner):
         self.title = title
         self.body = body
+        self.owner = owner
 
     def __repr__(self):
         return '<Blog %r>' % self.title
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key = True)
+    username = db.Column(db.String(120), unique = True)
+    password = db.Column(db.String(120))
+    posts = db.relationship('Blog', backref='owner')
+
+
+@app.route("/signup", methods=['POST', 'GET'])
+def signup():
+    if request.method == 'POST':
+        user = request.form['email']
+        password = request.form['password']
+        verify = request.form['verify']
+
+        #VALIDATE USERS DATA
+
+        existing_user = User.query.filter_by(username=username).first()
+        if not existing_user:
+            new_user = User(email, password)
+            db.session.add(new_user)
+            db.session.commit()
+            #NEED TO REMEMBER THE USER
+            return redirect("blog")
+
+        else:
+            return "<h1>Duplicate User</h1>"
+    return render_template('signup.html')
+
 
 
 @app.route("/blog", methods=['POST', 'GET'])
