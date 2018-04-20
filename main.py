@@ -35,6 +35,16 @@ class User(db.Model):
         self.username = username
         self.password = password
 
+@app.before_request
+def require_login():
+    allowed_routes = ['login', 'signup']
+    if request.endpoint not in allowed_routes and 'username' not in session:
+        return redirect('/login')
+
+@app.route('/logout')
+def logout():
+    del session['username']
+    return redirect('login')
 
 @app.route("/login", methods=['POST', 'GET'])
 def login():
@@ -69,7 +79,7 @@ def signup():
             new_user = User(username, password)
             db.session.add(new_user)
             db.session.commit()
-            #NEED TO REMEMBER THE USER
+            session['username'] = username
             return redirect("/new_post")
 
         else:
