@@ -60,9 +60,9 @@ def signup():
 
         #VALIDATE USERS DATA
         if password != verify or password == '' or len(password) < 3:
-            error = 'Passwords cannot be left blank and must be greater than 3 characters'
-            return redirect("/signup?error=" + error)
-            #Error is not working. NEED TO FIX.
+            flash('Passwords cannot be left blank and must be greater than 3 characters')
+            return redirect("/signup")
+            
 
         existing_user = User.query.filter_by(username=username).first()
         if not existing_user:
