@@ -149,15 +149,17 @@ def display_post():
     id = request.args.get('id')
     
     blog = Blog.query.get(id)
+    user_id = blog.id
     blog_title = blog.title
     blog_body = blog.body
+    author = blog.owner.username
     #NEED TO ADD A CREATION DATE/TIME ATTRIBUTE AND ORDER IT IN /BLOG
     if blog_title == '' or blog_body == '':
         error = 'Text fields cannot be left blank'
 
         return redirect('/new_post?error=' + error + '&blog_title=' + blog_title + '&blog_body=' + blog_body)
 
-    return render_template("post_display.html", blog_title=blog_title, blog_body=blog_body)
+    return render_template("post_display.html", user_id=user_id, blog_title=blog_title, blog_body=blog_body, author=author)
 
 if __name__ == '__main__':
     app.run()
