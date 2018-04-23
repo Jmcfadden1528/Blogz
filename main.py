@@ -1,6 +1,7 @@
 from flask import Flask, request, redirect, render_template, session, flash
 from flask_sqlalchemy import SQLAlchemy
 import cgi
+import os
 
 app = Flask(__name__)
 app.config['DEBUG'] = True      # displays runtime errors in the browser, too
@@ -37,9 +38,22 @@ class User(db.Model):
 
 @app.before_request
 def require_login():
-    allowed_routes = ['login', 'signup']
+    allowed_routes = ['login', 'signup', '/']
     if request.endpoint not in allowed_routes and 'username' not in session:
         return redirect('/login')
+
+@app.route('/')
+def display_users():
+    usernames = User.query.all()
+    return render_template("index.html", usernames=usernames)
+
+@app.route('/singleuser')
+def singleuser_posts():
+    #Should single user page be handled here or under the blog handler??
+    #Trying to get info from query parameter to render singleuser page
+    user_id = int(request.args.get('user_id'))
+    user_posts = Blog.query.filter_by(user_id=user_id)
+    return render_template("singleuser.html", user_posts=user_posts)
 
 @app.route('/logout')
 def logout():
@@ -91,10 +105,12 @@ def signup():
 @app.route("/blog", methods=['POST', 'GET'])
 def display_blog():
     #needs to receive info from new_post
+    owner = User.query.filter_by(username=session['username']).first()
+
     if request.method == 'POST':
         title = request.form['title']
         body = request.form['body']
-        new_post = Blog(title, body)
+        new_post = Blog(title, body, owner)
         db.session.add(new_post)
         db.session.commit()
 
@@ -104,9 +120,11 @@ def display_blog():
             return redirect ('/post_display?id=' + str(new_post.id))
        
     if request.method == 'GET':
-   
-            all_posts = Blog.query.all()
-            return render_template("blog.html", all_posts=all_posts)
+        
+        all_posts = Blog.query.all()
+        return render_template("blog.html", all_posts=all_posts)
+
+
         
 
 

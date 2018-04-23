@@ -9,7 +9,10 @@
         <h2><a id='blog_title' href='/post_display?id={{post.id}}'>{{post.title}}</a></h2>
         <br>
         <p class='body_margin'>{{post.body}}</p>
+        <br>
+        <p>Written by: <a href='/singleuser?user_id={{post.owner.id}}'>{{post.owner.username}}</a></p>
         <hr>
+
     {% endfor %}
 
 
