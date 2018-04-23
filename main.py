@@ -149,7 +149,7 @@ def display_post():
     id = request.args.get('id')
     
     blog = Blog.query.get(id)
-    user_id = blog.id
+    user_id = blog.owner.id
     blog_title = blog.title
     blog_body = blog.body
     author = blog.owner.username
