@@ -1,7 +1,7 @@
 from flask import Flask, request, redirect, render_template, session, flash
 from flask_sqlalchemy import SQLAlchemy
 import cgi
-import os
+
 
 app = Flask(__name__)
 app.config['DEBUG'] = True      # displays runtime errors in the browser, too
@@ -38,8 +38,8 @@ class User(db.Model):
 
 @app.before_request
 def require_login():
-    allowed_routes = ['login', 'signup', '/']
-    if request.endpoint not in allowed_routes and 'username' not in session:
+    allowed_routes = ['login', 'signup', 'display_users', 'display_blog']
+    if 'username' not in session and request.endpoint not in allowed_routes:
         return redirect('/login')
 
 @app.route('/')
@@ -104,12 +104,12 @@ def signup():
 
 @app.route("/blog", methods=['POST', 'GET'])
 def display_blog():
-    #needs to receive info from new_post
-    owner = User.query.filter_by(username=session['username']).first()
+   
 
     if request.method == 'POST':
         title = request.form['title']
         body = request.form['body']
+        owner = User.query.filter_by(username=session['username']).first()
         new_post = Blog(title, body, owner)
         db.session.add(new_post)
         db.session.commit()

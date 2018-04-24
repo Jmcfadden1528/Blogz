@@ -15,17 +15,22 @@
                 font-style: italic;
                 font-size: 32px;
             }
+            #main_title {text-align: center}
             .body_area {
                 
             }
         </style>
     </head>
 <body>
-    <a href='/blog'>Main Page</a> 
+    <h1 id = 'main_title'>BLOGZ</h1>
     <br>
-    <a href='/new_post'>Create a Post</a>
+    <a href="/">Main Page</a>
     <br>
-    <a href='/logout'>Log out</a>
+    <a href="/blog">See All Blog Posts</a> 
+    <br>
+    <a href="/new_post">Create a Post</a>
+    <br>
+    <a href="/logout">Log out</a>
 
    {% with messages = get_flashed_messages() %}
     <ul>
