@@ -38,13 +38,14 @@ class User(db.Model):
 
 @app.before_request
 def require_login():
-    allowed_routes = ['login', 'signup', 'display_users', 'display_blog']
+    #allowed routes defined by function name. Not by route name.
+    allowed_routes = ['login', 'signup', 'display_users', 'display_blog', 'singleuser_posts', 'display_post'] 
     if 'username' not in session and request.endpoint not in allowed_routes:
         return redirect('/login')
 
 @app.route('/')
 def display_users():
-    usernames = User.query.all()
+    usernames = User.query.all() #retrieves all usernames from database
     return render_template("index.html", usernames=usernames)
 
 @app.route('/singleuser')
@@ -147,7 +148,7 @@ def create_new_post():
 @app.route("/post_display", methods=['POST', 'GET'])
 def display_post(): 
     id = request.args.get('id')
-    
+    ## I THINK I NEED TO FIX THIS
     blog = Blog.query.get(id)
     user_id = blog.owner.id
     blog_title = blog.title
